@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   ActivityIndicator,
@@ -10,7 +11,7 @@ import {
 } from "react-native";
 import { appleBlue, zincColors } from "@/constants/Colors";
 
-type ButtonVariant = "filled" | "outline" | "ghost";
+type ButtonVariant = "filled" | "outline" | "ghost" | "secondary";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -60,6 +61,11 @@ export const Button: React.FC<ButtonProps> = ({
           ...baseStyle,
           backgroundColor: isDark ? zincColors[50] : zincColors[900],
         };
+      case "secondary":
+        return {
+          ...baseStyle,
+          backgroundColor: isDark ? zincColors[800] : zincColors[100],
+        };
       case "outline":
         return {
           ...baseStyle,
@@ -83,6 +89,8 @@ export const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case "filled":
         return isDark ? zincColors[900] : zincColors[50];
+      case "secondary":
+        return isDark ? zincColors[200] : zincColors[700];
       case "outline":
       case "ghost":
         return appleBlue;

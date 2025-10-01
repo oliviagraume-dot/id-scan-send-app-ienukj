@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Stack, router } from "expo-router";
 import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
@@ -13,44 +14,51 @@ const ICON_COLOR = "#007AFF";
 
 export default function HomeScreen() {
 
-  const modalDemos = [
+  const appFeatures = [
+    {
+      title: "Scanner ID",
+      description: "Scanner une pièce d'identité et extraire les informations",
+      route: "/scanner",
+      color: "#007AFF",
+      icon: "camera"
+    },
     {
       title: "Standard Modal",
       description: "Full screen modal presentation",
       route: "/modal",
-      color: "#007AFF",
+      color: "#34C759",
+      icon: "square.grid.3x3"
     },
     {
       title: "Form Sheet",
       description: "Bottom sheet with detents and grabber",
       route: "/formsheet",
-      color: "#34C759",
+      color: "#FF9500",
+      icon: "doc.text"
     },
     {
       title: "Transparent Modal",
       description: "Overlay without obscuring background",
       route: "/transparent-modal",
-      color: "#FF9500",
+      color: "#FF3B30",
+      icon: "eye"
     }
   ];
 
-  const renderModalDemo = ({ item }: { item: typeof modalDemos[0] }) => (
-    <View style={styles.demoCard}>
-      <View style={[styles.demoIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name="square.grid.3x3" color="white" size={24} />
+  const renderFeatureCard = ({ item }: { item: typeof appFeatures[0] }) => (
+    <Pressable 
+      style={styles.featureCard}
+      onPress={() => router.push(item.route as any)}
+    >
+      <View style={[styles.featureIcon, { backgroundColor: item.color }]}>
+        <IconSymbol name={item.icon as any} color="white" size={24} />
       </View>
-      <View style={styles.demoContent}>
-        <Text style={styles.demoTitle}>{item.title}</Text>
-        <Text style={styles.demoDescription}>{item.description}</Text>
+      <View style={styles.featureContent}>
+        <Text style={styles.featureTitle}>{item.title}</Text>
+        <Text style={styles.featureDescription}>{item.description}</Text>
       </View>
-      <Button
-        variant="outline"
-        size="sm"
-        onPress={() => router.push(item.route as any)}
-      >
-        Try It
-      </Button>
-    </View>
+      <IconSymbol name="chevron.right" color="#666" size={20} />
+    </Pressable>
   );
 
   const renderEmptyList = () => (
@@ -89,15 +97,22 @@ export default function HomeScreen() {
     <>
       <Stack.Screen
         options={{
-          title: "Building the app...",
+          title: "Scanner ID App",
           headerRight: renderHeaderRight,
           headerLeft: renderHeaderLeft,
         }}
       />
       <View style={styles.container}>
+        <View style={styles.headerSection}>
+          <Text style={styles.headerTitle}>Bienvenue</Text>
+          <Text style={styles.headerSubtitle}>
+            Scannez vos pièces d'identité et extrayez facilement les informations importantes
+          </Text>
+        </View>
+        
         <FlatList
-          data={modalDemos}
-          renderItem={renderModalDemo}
+          data={appFeatures}
+          renderItem={renderFeatureCard}
           keyExtractor={(item) => item.route}
           contentContainerStyle={styles.listContainer}
           contentInsetAdjustmentBehavior="automatic"
@@ -111,7 +126,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f9fa',
   },
   headerSection: {
     padding: 20,
@@ -121,7 +136,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e5e5e5',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
@@ -135,20 +150,20 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
   },
-  demoCard: {
+  featureCard: {
     backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  demoIcon: {
+  featureIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
@@ -156,19 +171,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
-  demoContent: {
+  featureContent: {
     flex: 1,
   },
-  demoTitle: {
+  featureTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
     marginBottom: 4,
   },
-  demoDescription: {
+  featureDescription: {
     fontSize: 14,
     color: '#666',
-    lineHeight: 18,
+    lineHeight: 20,
   },
   emptyStateContainer: {
     alignItems: "center",

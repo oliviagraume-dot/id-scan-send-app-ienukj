@@ -28,12 +28,14 @@ Envoyé depuis l'app Scanner ID`;
       if (canOpen) {
         await Linking.openURL(url);
         console.log('SMS ouvert avec succès');
+        return { success: true };
       } else {
-        Alert.alert('Erreur', 'Impossible d\'ouvrir l\'application SMS');
+        console.log('Impossible d\'ouvrir l\'application SMS');
+        return { success: false, error: 'Impossible d\'ouvrir l\'application SMS' };
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi SMS:', error);
-      Alert.alert('Erreur', 'Erreur lors de l\'ouverture de l\'application SMS');
+      return { success: false, error: 'Erreur lors de l\'ouverture de l\'application SMS' };
     } finally {
       setIsSending(false);
     }
@@ -50,16 +52,48 @@ Envoyé depuis l'app Scanner ID`;
       if (canOpen) {
         await Linking.openURL(url);
         console.log('Email ouvert avec succès');
+        return { success: true };
       } else {
-        Alert.alert('Erreur', 'Impossible d\'ouvrir l\'application email');
+        console.log('Impossible d\'ouvrir l\'application email');
+        return { success: false, error: 'Impossible d\'ouvrir l\'application email' };
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi email:', error);
-      Alert.alert('Erreur', 'Erreur lors de l\'ouverture de l\'application email');
+      return { success: false, error: 'Erreur lors de l\'ouverture de l\'application email' };
     } finally {
       setIsSending(false);
     }
   }, [formatInfoForMessage]);
+
+  const sendMessage = useCallback(async (info: ExtractedIDInfo) => {
+    return new Promise<{ success: boolean; error?: string }>((resolve) => {
+      Alert.alert(
+        'Envoyer les informations',
+        'Choisissez comment envoyer les informations',
+        [
+          {
+            text: 'SMS',
+            onPress: async () => {
+              const result = await sendViaSMS(info);
+              resolve(result);
+            }
+          },
+          {
+            text: 'Email',
+            onPress: async () => {
+              const result = await sendViaEmail(info);
+              resolve(result);
+            }
+          },
+          {
+            text: 'Annuler',
+            style: 'cancel',
+            onPress: () => resolve({ success: false, error: 'Envoi annulé' })
+          }
+        ]
+      );
+    });
+  }, [sendViaSMS, sendViaEmail]);
 
   const shareInfo = useCallback(async (info: ExtractedIDInfo) => {
     try {
@@ -72,30 +106,24 @@ Envoyé depuis l'app Scanner ID`;
           title: 'Informations pièce d\'identité',
           text: message,
         });
+        return { success: true };
       } else {
-        // Fallback vers le presse-papiers ou autre méthode
-        Alert.alert(
-          'Partager les informations',
-          'Choisissez comment partager les informations',
-          [
-            { text: 'SMS', onPress: () => sendViaSMS(info) },
-            { text: 'Email', onPress: () => sendViaEmail(info) },
-            { text: 'Annuler', style: 'cancel' }
-          ]
-        );
+        // Fallback vers le choix SMS/Email
+        return await sendMessage(info);
       }
     } catch (error) {
       console.error('Erreur lors du partage:', error);
-      Alert.alert('Erreur', 'Erreur lors du partage des informations');
+      return { success: false, error: 'Erreur lors du partage des informations' };
     } finally {
       setIsSending(false);
     }
-  }, [formatInfoForMessage, sendViaSMS, sendViaEmail]);
+  }, [formatInfoForMessage, sendMessage]);
 
   return {
     isSending,
     sendViaSMS,
     sendViaEmail,
+    sendMessage,
     shareInfo,
     formatInfoForMessage
   };

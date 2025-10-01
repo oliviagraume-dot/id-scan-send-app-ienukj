@@ -1,3 +1,4 @@
+
 import "react-native-reanimated";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
@@ -77,16 +78,32 @@ export default function RootLayout() {
               {/* Main app group */}
               <Stack.Screen name="(index)" />
 
+              {/* Scanner screens */}
+              <Stack.Screen 
+                name="scanner" 
+                options={{
+                  headerShown: true,
+                  title: "Scanner ID"
+                }}
+              />
+              <Stack.Screen 
+                name="results" 
+                options={{
+                  headerShown: true,
+                  title: "Résultats"
+                }}
+              />
+
               {/* Modal Demo Screens */}
               <Stack.Screen
-                name="modal-demo"
+                name="modal"
                 options={{
                   presentation: "modal",
                   headerShown: true,
                 }}
               />
               <Stack.Screen
-                name="formsheet-demo"
+                name="formsheet"
                 options={{
                   presentation: "formSheet",
                   sheetGrabberVisible: true,
@@ -96,7 +113,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
-                name="transparent-modal-demo"
+                name="transparent-modal"
                 options={{
                   presentation: "transparentModal",
                   headerShown: false,
